@@ -7,9 +7,18 @@
 // Podívejte se, jak se v HTML vytváří jeden e-mail.
 // Smažte v HTML obsah elementu #inbox. Zobrazte na stránce e-maily stažené z API. Tělo e-mailu nechte prozatím prázdné.
 
+// E-maily, složky
+// zapni hlavu
+// V naší e-mailové aplikaci zobrazíme dvě oddělené sekce: přečtené zprávy a nepřečtené zprávy.
+
+// V HTML stránce vytvořte dvě sekce. Jedna bude sloužit k zobrazení přečtené a druhá nepřečtené pošty.
+// Naplňte každou sekci přislušnými zprávami načtenými z API.
+// Zařiďte, aby se u přečtených e-mailů zobrazovala ikonka otevřené obálky (viz CSS třída email__icon--opened).
+
 const naplnElementEmailNeprectene = (items)=> {
     const elementEmailNeprectene = document.querySelector('#neprectene');
-    const emaily = items.map( polozka =>`
+    const emaily = items.map( (polozka) =>{
+        return`
     <div class="email">
         <div class="email__head">
           <button class="email__icon email__icon--closed"></button>
@@ -22,18 +31,43 @@ const naplnElementEmailNeprectene = (items)=> {
         <div class="email__body"></div>
       </div>
 
-    `)
+    `})
     .join('');
-   // console.log(emaily)
    elementEmailNeprectene.innerHTML = emaily;
   }  
 
 fetch('https://apps.kodim.cz/daweb/trening-api/apis/emails?folder=unread')
     .then((response)=>response.json())
     .then((data)=>{
-        //console.log(data);
-        //console.log(data.sender)
-        naplnElementEmailNeprectene(data)
-        
+        naplnElementEmailNeprectene(data.emails)        
       })
 
+
+      const naplnElementEmailPrectene = (items)=> {
+        const elementEmailPrectene = document.querySelector('#prectene');
+        const emaily = items.map( (polozka) =>{
+            return`
+        <div class="email">
+            <div class="email__head">
+              <button class="email__icon email__icon--opened"></button>
+              <div class="email__info">
+                <div class="email__sender">${polozka.sender.name}</div>
+                <div class="email__subject">${polozka.subject}</div>
+              </div>
+              <div class="email__time">${polozka.time}</div>
+            </div>
+            <div class="email__body"></div>
+          </div>
+    
+        `})
+        .join('');
+       elementEmailPrectene.innerHTML = emaily;
+      }  
+    
+    fetch('https://apps.kodim.cz/daweb/trening-api/apis/emails?folder=read')
+        .then((response)=>response.json())
+        .then((data)=>{
+            naplnElementEmailPrectene(data.emails)        
+          })
+
+  
